@@ -75,10 +75,7 @@ PlaylistItem.prototype.toString = function toString() {
     var attr = this.get('daterange');
     var s = Object.keys(attr)
       .map(function (key) {
-        if (
-          attr['CLASS'] === 'com.apple.hls.interstitial' &&
-          (key === 'X-RESUME-OFFSET' || key === 'X-PLAYOUT-LIMIT')
-        ) {
+        if (attr['CLASS'] === 'com.apple.hls.interstitial' && (key === 'X-RESUME-OFFSET' || key === 'X-PLAYOUT-LIMIT')) {
           // The CLASS=com.apple.hls.interstitial has some daterange attributes
           // that are not quoted strings
           return key + '=' + `${attr[key]}`;
