@@ -104,10 +104,23 @@ M3U.prototype.toString = function toString() {
   });
 
   if (this.items.PlaylistItem.length) {
+    let cuedInterstitial = false;
+    let final_interstitial_item = null;
+    if (this.items.PlaylistItem[this.items.PlaylistItem.length - 1].get("daterange") &&
+    this.items.PlaylistItem[this.items.PlaylistItem.length - 1].get("daterange")["CLASS"] == "com.apple.hls.interstitial" &&
+    this.items.PlaylistItem[this.items.PlaylistItem.length - 1].get("daterange")["CUE"]
+  ) {
+      cuedInterstitial = true;
+    }
+    if (cuedInterstitial) {
+      final_interstitial_item = this.items.PlaylistItem.pop()
+    }
     output.push(this.items.PlaylistItem.map(itemToString).join('\n'));
-
     if (this.get('playlistType') === 'VOD') {
       output.push('#EXT-X-ENDLIST');
+      if (final_interstitial_item) {
+        output.push(final_interstitial_item.toString());
+      }
     }
   } else {
     if (this.items.StreamItem.length) {

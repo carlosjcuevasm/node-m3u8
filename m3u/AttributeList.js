@@ -142,6 +142,18 @@ function parseQuotedString(value) {
   }
 }
 
+function parseAttributeStringToDict(inputString) {
+  const data = {};
+  const regex = /([\w-]+)=(".*?"|[^,]+)/g;
+  let match;
+  while ((match = regex.exec(inputString)) !== null) {
+      const key = match[1]; 
+      const value = match[2].replace(/^"|"$/g, ''); 
+      data[key] = value; 
+  }
+  return data; 
+}
+
 var parse = {
   'boolean': function parseBoolean(value) {
     return typeof value == 'boolean'
@@ -161,20 +173,7 @@ var parse = {
   'quoted-string': parseQuotedString,
   'closed-captions': parseQuotedString,
   'quoted-string-array': function parseQuotedStringArray(value) {
-    var data = {};
-    value.split(',').map(function(kv) {
-      var s = kv.split('=');
-      var unquoted = "";
-      if (s[1]) {
-        if (s[1].indexOf('"') === 0 && s[1].lastIndexOf('"') == s[1].length - 1) {
-          unquoted = s[1].slice(1, -1);
-        } else {
-          unquoted = s[1];
-        }
-        data[s[0]] = unquoted;
-      }
-    });
-    return data;
+   return parseAttributeStringToDict(value);
   },
   'hexadecimal-sequence': function parseHexadecimalSequence(value) {
     return value;
