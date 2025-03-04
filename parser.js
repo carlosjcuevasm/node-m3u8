@@ -115,6 +115,14 @@ m3uParser.prototype['EXTINF'] = function parseInf(data) {
       this.currentItem.set('sctedata', this.scteData);
       this.scteData = null;
     }
+    if (this.cueId !== null) {
+      this.currentItem.set('id', this.cueId);
+      this.cueId = null;
+    }
+    if (this.cuePartner !== null) {
+      this.currentItem.set('partner', this.cuePartner);
+      this.cuePartner = null;
+    }
   }
 
   if (this.cueOutCont !== null) {
@@ -191,6 +199,12 @@ m3uParser.prototype['EXT-X-CUE-OUT'] = function parseInf(data) {
   var durationAttr = attr.find(elem => elem.key.toLowerCase() === 'duration');
   if(durationAttr) {
     this.cueOut = durationAttr.value;
+    var idAttr = attr.find(elem => elem.key.toLowerCase() === 'id');
+    var partner = attr.find(elem => elem.key.toLowerCase() === 'partner');
+    if (idAttr && partner) {
+      this.cueId = idAttr.value;
+      this.cuePartner = partner.value;
+    }
   } else {
     const duration = parseInt(data);
     this.cueOut = !isNaN(duration) ? duration : 0;
